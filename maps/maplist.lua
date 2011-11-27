@@ -1,0 +1,1 @@
+maplist = {"maps/map1.lua"}
