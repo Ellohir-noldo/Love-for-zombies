@@ -9,10 +9,6 @@ function in_table(t,s)
   end
 end
 
-function math.clamp(x, min, max)
-  return x < min and min or (x > max and max or x)
-end
-
 -- Averages an arbitrary number of angles.
 function math.averageAngles(...)
     local x,y = 0,0

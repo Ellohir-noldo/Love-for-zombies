@@ -3,7 +3,7 @@
 function init_weapon()
     -- default values 
     weapon = {}
-    weapon.speed = 10
+    weapon.speed = 14
     weapon.pack = 8
     weapon.left = weapon.pack
     weapon.angle = 0
@@ -11,7 +11,9 @@ function init_weapon()
     weapon.not_reloading = 1
     weapon.img = love.graphics.newImage("img/bullet.png")
     weapon.bulletQ = love.graphics.newQuad(0,0, 4, 8, 16, 16)
+    weapon.rockQ = love.graphics.newQuad(6,0, 7, 8, 16, 16)
     weapon.bullets = {}
+    weapon.rocked = {}
     weapon.blink = false
     weapon.blink_time = 0
     return weapon
@@ -49,7 +51,7 @@ end
 
 
 function shoot_control(player, mouse_x, mouse_y, shot, dt)
-    if player.alive < 0.1 then return end
+    if player.alive < 0.2 then return end
 
     -- so I heard you want to shoot?
     if love.mouse.isDown("l") then
@@ -74,6 +76,17 @@ function update_shots(weapon, dt)
     for i,v in ipairs(weapon.bullets) do
       v.x = v.x + (weapon.speed * v.dirx)
       v.y = v.y + (weapon.speed * v.diry)
+      if v.x > tiles.w or v.x < 0 or v.y > tiles.h or v.y < 0 then
+        table.remove(weapon.bullets, i)
+      end
+    end
+    
+    -- keep track of the bullet rebound flash
+    for i,sh in ipairs(weapon.rocked) do
+      sh.time = sh.time + dt
+      if sh.time > 0.1 then
+        table.remove(weapon.rocked, i)
+      end
     end
     
     -- which bullets hit rocks?
@@ -101,6 +114,11 @@ end
 function bullets_hit_rocks(shot_list)
     for k,sh in ipairs(shot_list) do
         if player_collides(sh,tiles) then
+            sh.time = 0
+            table.insert(weapon.rocked, sh) 
+            if math.dist(player.x,player.y, sh.x,sh.y) < 400 then
+                TEsound.play("sound/rock.wav")
+            end
             table.remove(shot_list, k)
         end
     end
@@ -112,18 +130,22 @@ function draw_shots(weapon, player)
       for k,sh in ipairs(weapon.bullets) do
 	  love.graphics.drawq(weapon.img, weapon.bulletQ, sh.x, sh.y, sh.angle, 0.6, 0.8)
 	end
+
+      for k,sh in ipairs(weapon.rocked) do
+	  love.graphics.drawq(weapon.img, weapon.rockQ, sh.x, sh.y, sh.angle, 0.6, 0.8)
+	end
 	  
    
   -- ammo left
   if weapon.blink == false then
       for i = 1, weapon.left do
           love.graphics.setColor(200, 200, 200)
-          love.graphics.draw(weapon.img, camera:getX() + 10 * i, camera:getY() + 10, 0, 2, 2)
+          love.graphics.drawq(weapon.img, weapon.bulletQ, 500 + camera:getX() - 11 * i, camera:getY() + 10, 0, 2, 2)
           --love.graphics.print(string.format("%02d",shot.left), camera:getX() +10 + 20, camera:getY() + 10)
       end
   elseif weapon.blink_time < 0.3 then
-      love.graphics.setColor(0, 0, 0)
-      love.graphics.print("RELOAD", camera:getX() +10, camera:getY() + 10)
+      love.graphics.setColor(250, 0, 0)
+      love.graphics.print("RELOAD", 410 + camera:getX() +10, camera:getY() + 5)
   end
    
 end

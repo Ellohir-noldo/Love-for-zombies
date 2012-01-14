@@ -4,9 +4,11 @@ function init_tiles()
      tiles = {}
      -- load requires a table "tiles" to load the map to
      -- this allows to load another maps while not changing what is being printed
-     load_map(tiles, "maps/map1.lua")
-     
-    return tiles
+    love.filesystem.load("maps/maplist.lua")()
+    tiles.maplist = maplist
+    tiles.map_amount = #maplist
+    tiles.map_index = 1
+    return load_map(tiles, maplist[tiles.map_index])
 end
  
  
@@ -48,15 +50,15 @@ function load_map(tiles, path)
     
 end
 
-function player_tile(player, tiles)
+function player_tile(player)
     return tiles.tileTable[math.ceil(player.x/tiles.tileW)][math.ceil(player.y/tiles.tileH)]
 end
 
-function player_in_mud(player, tiles)
+function player_in_mud(player)
     return player_tile(player,tiles) == 'm'
 end
 
-function player_collides(player, tiles)
+function player_collides(player)
     return in_table(tiles.collidable, player_tile(player,tiles))
 end
 

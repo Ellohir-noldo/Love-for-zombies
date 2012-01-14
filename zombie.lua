@@ -30,7 +30,7 @@ function new_zombie(zombie_list, player)
     z.x = math.clamp(player.x + math.random(400) * math.rsign(), 0 + 2*tiles.tileW, tiles.w - 2*tiles.tileW)
     z.y = math.clamp(player.y + math.random(400) * math.rsign(), 0 + 2*tiles.tileH, tiles.h - 2*tiles.tileH)
     -- but not too close
-    if math.dist(z.x, z.y, player.x, player.y) < 200 then
+    if math.dist(z.x, z.y, player.x, player.y) < 200 or player_collides(z) then
         new_zombie(zombie_list, player)
 	return
     end
@@ -87,9 +87,8 @@ function update_zombies(zombie, player, tiles, dt)
         v.diry = player.y - v.y
 	v.dirx, v.diry, _ = math.normalize(v.dirx, v.diry)
         
-	-- update angle and walked-meter
+	-- update angle
 	v.angle = math.getAngle(player.x, player.y, v.x, v.y)
-        v.walked = v.walked + (v.speed * dt)
 	
         if player_in_mud(v, tiles) then
                 v.speed = v.original_speed * 0.4
@@ -97,26 +96,23 @@ function update_zombies(zombie, player, tiles, dt)
                 v.speed = v.original_speed
         end
         
-        if player_collides(v, tiles) then
-                if v.last_dirx > 0 and v.last_dirx > 0 then
-                        v.x = v.x - 1
-                        v.y = v.y - 1
-                elseif v.last_dirx < 0 and v.last_dirx > 0 then
-                        v.x = v.x + 1
-                        v.y = v.y - 1
-                elseif v.last_dirx > 0 and v.last_dirx < 0 then
-                        v.x = v.x - 1
-                        v.y = v.y + 1
-                elseif v.last_dirx < 0 and v.last_dirx < 0 then
-                        v.x = v.x + 1
-                        v.y = v.y + 1
-                end
-                v.last_dirx = v.dirx
-                v.last_diry = v.diry
-        else
-                -- update position
-                v.x = v.x + (v.speed * v.dirx * dt)
-                v.y = v.y + (v.speed * v.diry * dt)
+        v.walked = v.walked + (v.speed * dt)
+        
+
+        -- movement with colision detection and all
+        dx =  (v.speed * v.dirx * dt)
+        dy =  (v.speed * v.diry * dt)
+        
+        local currX=v.x
+        v.x=v.x+dx    
+        if player_collides(v,tiles) then 
+                v.x=currX
+        end
+    
+        local currY= v.y
+        v.y=v.y+dy
+        if player_collides(v,tiles) then 
+                v.y=currY
         end
         
 	-- changing sprite as walking
@@ -136,7 +132,7 @@ function update_zombies(zombie, player, tiles, dt)
         -- how long you been dead-dead?
 	v.tdead = v.tdead + dt
 	-- choose sprite accordingly
-	if v.tdead > 1 then
+	if v.tdead > 8 then
 	    table.remove(zombie.dying, i)
 	elseif v.tdead < 0.05 then
 	    v.deadsprite = 0 
@@ -148,6 +144,8 @@ function update_zombies(zombie, player, tiles, dt)
 	    v.deadsprite = 3
 	elseif v.tdead < 0.8 then
 	    v.deadsprite = 4
+	elseif v.tdead < 1.5 then
+	    v.deadsprite = 5
 	end
     end
 end
@@ -178,8 +176,25 @@ function zombies_shot(zombie, shot_list, player)
   end
 end
 
+function draw_zombie_corpses(zombies)
+  love.graphics.setColor(200, 200, 200)
+  
+  -- draw the deading dead
+    for i,v in ipairs(zombie.dying) do
+    	  if v.health.max == 2 then
+	      -- draw red zombie corpse
+              love.graphics.setColor(200, 120, 120)
+	  elseif v.health.max == 5 then
+	      -- draw black zombie corpse
+              love.graphics.setColor(120, 120, 120)
+	  end
+      love.graphics.drawq(zombie.dimg, zombie.step[v.deadsprite], v.x, v.y, -v.angle - math.pi/2, 1, 1, 32 / 2, 32 / 2)
+  end
+end
+
 function draw_zombies(zombies)
   love.graphics.setColor(200, 200, 200)
+  
   -- draw the living dead
   for i,v in ipairs(zombie.list) do
       -- if the zombie is strong
@@ -200,16 +215,5 @@ function draw_zombies(zombies)
       -- draw zombie
       love.graphics.drawq(zombie.img, zombie.step[v.nsteps], v.x, v.y, -v.angle - math.pi/2, 1, 1, 32 / 2, 32 / 2)
       love.graphics.setColor(200, 200, 200)
-  end
-  -- draw the deading dead
-    for i,v in ipairs(zombie.dying) do
-    	  if v.health.max == 2 then
-	      -- draw red zombie corpse
-              love.graphics.setColor(200, 120, 120)
-	  elseif v.health.max == 5 then
-	      -- draw black zombie corpse
-              love.graphics.setColor(120, 120, 120)
-	  end
-      love.graphics.drawq(zombie.dimg, zombie.step[v.deadsprite], v.x, v.y, -v.angle - math.pi/2, 1, 1, 32 / 2, 32 / 2)
   end
 end

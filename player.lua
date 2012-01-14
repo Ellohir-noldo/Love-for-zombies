@@ -20,7 +20,6 @@ function init_player(w, h)
     player.last_step = 0
     
     -- health 
-    player.time_grabbed = 0
     player.health = {}
     player.health.max = 3
     player.health. curr = 3
@@ -35,47 +34,6 @@ function init_player(w, h)
     
     return player
     
-end
-
--- movement functions, bounds applied
-function move_left(player, dt)
-    player.walked = player.walked + player.speed* dt
-    if player_collides(player,tiles) then 
-        --player.x = math.clamp (player.x - 10, 0, player.bound_x)
-    else
-        player.x = player.x + player.speed * dt
-        player.last_step = 1
-    end
-end
-
-function move_right(player, dt)
-    player.walked = player.walked + player.speed* dt
-    if player_collides(player,tiles) then 
-        --player.x = math.clamp (player.x + 10, 0, player.bound_x)
-    else
-        player.x = player.x - player.speed * dt
-        player.last_step = 2
-    end
-end
-
-function move_up(player, dt)
-    player.walked = player.walked + player.speed* dt
-    if player_collides(player,tiles) then 
-        --player.y = math.clamp (player.y + 10, 0, player.bound_y)
-    else
-        player.y = player.y - player.speed * dt
-        player.last_step = 3
-    end
-end
-
-function move_down(player, dt)
-    player.walked = player.walked + player.speed* dt
-    if player_collides(player,tiles) then 
-        --player.y = math.clamp (player.y - 10, 0, player.bound_y)
-    else
-        player.y = player.y + player.speed * dt
-        player.last_step = 4
-    end
 end
 
 -- sprite is looking right so angle must be modified
@@ -125,43 +83,47 @@ function player_move(tiles, dt)
         player.speed = player.original_speed
     end
     
+    local dx,dy=0,0
+    
+    
+    player.walked = player.walked + player.speed* dt
+        -- player movement, including diagonal
+    if love.keyboard.isDown("d") and love.keyboard.isDown("w") then
+        dx = player.speed * dt * 0.7
+        dy = - player.speed * dt * 0.7
+    elseif love.keyboard.isDown("a") and love.keyboard.isDown("w") then
+        dx = - player.speed * dt * 0.7
+        dy = - player.speed * dt * 0.7
+    elseif love.keyboard.isDown("d") and love.keyboard.isDown("s") then
+        dx = player.speed * dt * 0.7
+        dy = player.speed * dt * 0.7
+    elseif love.keyboard.isDown("a") and love.keyboard.isDown("s") then
+        dx = - player.speed * dt * 0.7
+        dy = player.speed * dt * 0.7
+    -- straight player movement
+    elseif love.keyboard.isDown("d") then
+        dx = player.speed * dt
+    elseif love.keyboard.isDown("a") then
+        dx = - player.speed * dt
+    elseif love.keyboard.isDown("w") then
+        dy = - player.speed * dt
+    elseif love.keyboard.isDown("s") then
+        dy = player.speed * dt
+    else
+        player.walked = player.walked - player.speed* dt
+    end
+    
+    local currX=player.x
+    player.x=player.x+dx    
     if player_collides(player,tiles) then 
-        if player.last_step == 1 then
-            player.x = player.x - 1
-        elseif player.last_step == 2 then
-            player.x = player.x + 1
-        elseif player.last_step == 3 then
-            player.y = player.y + 1
-        elseif player.last_step == 4 then
-            player.y = player.y - 1
-        end
-        return
+        player.x=currX
     end
     
     
-    
-    -- player movement, including diagonal
-    if love.keyboard.isDown("d") and love.keyboard.isDown("w") then
-        move_left(player, dt * 0.7)
-	move_up(player, dt * 0.7)
-    elseif love.keyboard.isDown("a") and love.keyboard.isDown("w") then
-        move_right(player, dt * 0.7)
-	move_up(player, dt * 0.7)
-    elseif love.keyboard.isDown("d") and love.keyboard.isDown("s") then
-        move_left(player, dt * 0.7)
-        move_down(player, dt * 0.7)
-    elseif love.keyboard.isDown("a") and love.keyboard.isDown("s") then
-        move_right(player, dt * 0.7)
-	move_down(player, dt * 0.7)
-    -- straight player movement
-    elseif love.keyboard.isDown("d") then
-        move_left(player, dt)
-    elseif love.keyboard.isDown("a") then
-        move_right(player, dt)
-    elseif love.keyboard.isDown("w") then
-        move_up(player, dt)
-    elseif love.keyboard.isDown("s") then
-        move_down(player, dt)
+    local currY= player.y
+    player.y=player.y+dy
+    if player_collides(player,tiles) then 
+        player.y=currY
     end
     
 end
@@ -170,35 +132,22 @@ function player_attacked(player, zombie_list, dt)
 -- CheckCollision(box1x, box1y, box1w, box1h, box2x, box2y, box2w, box2h)
   for i,z in ipairs(zombie_list) do
                 if CheckCollision(z.x -10, z.y -10, 20, 20, player.x - 10, player.y - 10, 20, 20) then
-		    player.speed = 90
 		    -- yes, two zombies means twice damage
-	            player.time_grabbed = player.time_grabbed + dt
-		    if player.time_grabbed > 0.5 then
-		        player.health.curr = player.health.curr - 1
-			player.time_grabbed = 0
-		    end
+                    player.health.curr = player.health.curr - 2*dt
 		end
-  player.speed = 190
   end
 end
 
 -- is my player dead?
 function player_dead(player, zombie_list)
-    if player.health.curr == 0 then
+    if player.health.curr <= 0 then
         return true
     else
         return false
     end
 end
 
-function draw_player(player, menu)
-    -- player.step contains the quads (sprites)
-    -- player.nsteps contains actual sprite we are on
-    love.graphics.setColor(200, 200, 200)
-    love.graphics.drawq(player.img, player.step[player.nsteps], player.x, player.y, player.angle, 1, 1, 32 / 2, 32 / 2)
-    love.graphics.drawq(player.shot_img, player.step[player.shot_steps], player.x, player.y, player.angle, 1, 1, 32 / 2, 32 / 2)
-    
-    -- health bar
+function draw_health(player, menu)
     love.graphics.setColor(200, 0, 0, 200)
     if menu.health_bar then
         love.graphics.rectangle("fill", player.x - 10*player.health.max / 2, player.y - 15, 10*player.health.max, 3)
@@ -209,7 +158,14 @@ function draw_player(player, menu)
 	love.graphics.setColor(0, 200, 0, 200)
         love.graphics.rectangle("fill", camera:getX() + 5, camera:getY() + 5, 30*player.health.curr, 25)
     end
-	  
-    
+end
+
+function draw_player(player, menu)
+    -- player.step contains the quads (sprites)
+    -- player.nsteps contains actual sprite we are on
+    love.graphics.setColor(200, 200, 200)
+    love.graphics.drawq(player.img, player.step[player.nsteps], player.x, player.y, player.angle, 1, 1, 32 / 2, 32 / 2)
+    love.graphics.drawq(player.shot_img, player.step[player.shot_steps], player.x, player.y, player.angle, 1, 1, 32 / 2, 32 / 2)
+       
     --love.graphics.print(" "..string.format("%02d", player.x).." "..string.format("%02d",player.y), player.x, player.y)
 end

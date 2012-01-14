@@ -1,4 +1,3 @@
-
 require('math_snippet')
 require('camera')
 
@@ -9,7 +8,7 @@ require('tiles')
 require('menu')
 require('TEsound')
 require('rain')
-require('table_save')
+require('savetabletofile')
 
 --[[                                            LOVE.LOAD                                    ]]--
 function love.load()
@@ -19,6 +18,8 @@ function love.load()
     math.random(); math.random(); math.random()
     -- done. :-)
 
+    
+    
     -- initialize
     menu = init_menu()
     tiles = init_tiles()
@@ -28,6 +29,10 @@ function love.load()
     zombie = init_zombie()
     rain = init_rain()
     
+    if TEsound.disable then
+        TEsound.disable_sound()
+        menu.sound = false
+    end
     
     -- camera doesn't go behind tilemap, game is not paused
     camera:setBounds(0, 0, tiles.w - 512, tiles.h - 512)
@@ -63,7 +68,16 @@ function love.quit()
 end
 
 -- Lose focus = pause, get focus = unpause
-function love.focus(f) gameIsPaused = not f end
+function love.focus(f) 
+        if gameIsPaused and menu.sound then
+                TEsound.enable_sound()
+                TEsound.playLooping("sound/bgm.ogg", "bgm")
+        else
+                TEsound.disable_sound()
+                rain.playing = false
+        end
+        gameIsPaused = not f 
+end
 
 --[[                              LOVE.MOUSEPRESSED                                     ]]--
 function love.mousepressed(x, y, button)
@@ -123,10 +137,15 @@ function love.draw()
   
   -- self-explanatory draw functions
   draw_tiles(tiles)
+  draw_zombie_corpses(zombie)
+  -- player is above corpses
   draw_player(player, menu)
-  draw_rain(rain)
+  -- but zombies cover player
   draw_zombies(zombie)
-  draw_shots(weapon, player)
+  -- up it rain, shots and health
+  draw_rain(rain)
+  draw_shots(weapon, player)  
+  draw_health(player, menu)
   
   if menu.gamestart then
       draw_gamestart_menu(menu, player)
