@@ -13,7 +13,7 @@ require('savetabletofile')
 --[[                                            LOVE.LOAD                                    ]]--
 function love.load()
 	-- Pixel art means pixel scale
-	love.graphics.setDefaultImageFilter('linear','nearest')
+	love.graphics.setDefaultImageFilter('linear','linear')
 
     -- Initialize the pseudo random number generator
     math.randomseed( os.time() )
@@ -149,6 +149,7 @@ function love.draw()
   draw_shots(weapon, player)  
   draw_health(player, menu)
   
+  
   if menu.gamestart then
       draw_gamestart_menu(menu, player)
   elseif menu.gameover then
@@ -167,6 +168,17 @@ function love.draw()
   love.mouse.setVisible(false)
   love.graphics.circle("line", mouse_x, mouse_y, 10)
  -- love.graphics.print(mouse_x..","..mouse_y, mouse_x, mouse_y)
+  
+  
+    if gameIsPaused then
+      love.graphics.setColor(10, 10, 10, 200)
+      love.graphics.circle("fill", player.x, player.y, 1000)
+      love.graphics.setColor(200, 200, 200)
+      love.graphics.print("PAUSED", camera:getX() + 220, camera:getY() + 150, 0, 1, 1)
+  end
+
+  
+  
   
   -- finish with camera
   camera:unset()
