@@ -64,7 +64,6 @@ function update_gameover_scene(menu, player)
 	end
 	
 	if menu.gameover_color == 0 then -- screen is at last black
-	    --love.event.push('q')
 	    menu.highscore = true -- go highscore
 	    menu.gameover = false -- quit this menu
 	end  
@@ -116,7 +115,7 @@ function update_start_menu(menu, key, button)
 	    menu.settings = true
         -- exit
 	elseif menu.item == 4 and (button == "l"  or key=="return") then
-          love.event.push('q') -- Exit
+          love.event.push('quit') -- Exit
 	end
    
 end
@@ -267,6 +266,8 @@ function draw_gamestart_menu(menu, player)
       -- title
       love.graphics.setColor(200, 200, 200)
       love.graphics.print("Love for zombies", camera:getX() + 10, camera:getY() + 10, 0, 2, 2 )
+      love.graphics.print("By Ellohir", camera:getX() + 440, camera:getY() + 500, 0, 0.5, 0.5)
+      love.graphics.print("Powered by Love", camera:getX() + 1, camera:getY() + 500, 0, 0.5, 0.5)
       
       -- if selected, color is red, else is white
       -- really unefficient here

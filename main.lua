@@ -12,6 +12,8 @@ require('savetabletofile')
 
 --[[                                            LOVE.LOAD                                    ]]--
 function love.load()
+	-- Pixel art means pixel scale
+	love.graphics.setDefaultImageFilter('linear','nearest')
 
     -- Initialize the pseudo random number generator
     math.randomseed( os.time() )
