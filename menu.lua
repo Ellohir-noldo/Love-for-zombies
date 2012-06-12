@@ -9,6 +9,7 @@ function init_menu()
     menu.setting = 1
     menu.health_bar = false
     menu.sound = true
+    menu.rain = 0
     menu.size = 1
     menu.HS = table.load("highscore.txt") or {}
     menu.gameover_color = 256 -- for the gameover scene
@@ -195,17 +196,19 @@ function update_settings_menu(menu, key, button)
 	  -- ups and downs selection
 	if key== "up" and menu.setting > 1 then
           menu.setting = menu.setting - 1 
-	elseif key == "down" and menu.setting < 4 then
+	elseif key == "down" and menu.setting < 5 then
           menu.setting = menu.setting + 1
-	elseif key== "w" and menu.setting > 4 then
+	elseif key== "w" and menu.setting > 1 then
           menu.setting = menu.setting - 1
-	elseif key == "s" and menu.setting < 4 then
+	elseif key == "s" and menu.setting < 5 then
           menu.setting = menu.setting + 1
 	end
 	
         -- mouse selection
 	mx, my = camera:mousePosition()
-        if my > camera:getY() + 400 then
+        if my > camera:getY() + 450 then
+	    menu.setting = 5
+        elseif my > camera:getY() + 400 then
 	    menu.setting = 4
         elseif my > camera:getY() + 350 then
 	    menu.setting = 3
@@ -239,6 +242,14 @@ function update_settings_menu(menu, key, button)
                 love.graphics.setMode(512, 512, false, true, 0) 
             end
         elseif menu.setting == 4 and (button == "l"  or key=="return") then
+            if menu.rain == false then
+		menu.rain = true
+		enable_rain()
+	    else
+		menu.rain=false
+		disable_rain()
+	    end
+        elseif menu.setting == 5 and (button == "l"  or key=="return") then
             menu.showHS = false
             menu.gamestart = true
 	    menu.gameover = false
@@ -320,12 +331,23 @@ function draw_settings_menu(menu)
       else
           love.graphics.print("Window size = 1024x1024",  camera:getX() + 200, camera:getY() + 350 )
       end
-      
+     
       love.graphics.setColor(200, 200, 200)
       if menu.setting == 4 then
           love.graphics.setColor(200, 20, 20)
       end
-      love.graphics.print("Back",  camera:getX() + 200, camera:getY() + 400 )
+      if menu.rain then
+	love.graphics.print("Rain effect on",  camera:getX() + 200, camera:getY() + 400 )
+      else
+	love.graphics.print("Rain effect off",  camera:getX() + 200, camera:getY() + 400 )
+      end
+
+      
+      love.graphics.setColor(200, 200, 200)
+      if menu.setting == 5 then
+          love.graphics.setColor(200, 20, 20)
+      end
+      love.graphics.print("Back",  camera:getX() + 200, camera:getY() + 450 )
 
 end
 

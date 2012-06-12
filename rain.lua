@@ -14,8 +14,20 @@ function init_rain()
     return rain
 end
 
+function enable_rain()
+	rain.enable = true;
+end
+
+function disable_rain()
+	rain.enable = false;
+end
+
 function update_rain(rain, dt)
 
+    if rain.enable == false then
+	TEsound.stop("rain")
+    end
+    
     if rain.time < 0.01 then 
         rain.time = rain.time + dt
         return
@@ -42,9 +54,14 @@ function update_rain(rain, dt)
 end
 
 function draw_rain(rain)
-  for i = 1, rain.amount do
-      drop = rain.drops[i]
-      love.graphics.setColor(200, 200, 200)
-      love.graphics.draw(rain.img, drop.x, drop.y)
+  if rain.enable == false then
+	return
+  else
+  
+      for i = 1, rain.amount do
+          drop = rain.drops[i]
+          love.graphics.setColor(200, 200, 200)
+          love.graphics.draw(rain.img, drop.x, drop.y)
+      end
   end
 end

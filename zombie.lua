@@ -10,6 +10,7 @@ function init_zombie()
     zombie.dying = {}
     
     zombie.spawn_time = 0
+    zombie.time_to_spawn = 0.8 -- every 0.8 seconds a new zombie 
     
     -- players positions on tileset
     zombie.step = {}
@@ -27,10 +28,10 @@ function new_zombie(zombie_list, player)
     -- create zombie
     local z = {}
     -- random position
-    z.x = math.clamp(player.x + math.random(400) * math.rsign(), 0 + 2*tiles.tileW, tiles.w - 2*tiles.tileW)
-    z.y = math.clamp(player.y + math.random(400) * math.rsign(), 0 + 2*tiles.tileH, tiles.h - 2*tiles.tileH)
+    z.x = math.clamp(player.x + math.random(500) * math.rsign(), 0 + 2*tiles.tileW, tiles.w - 2*tiles.tileW)
+    z.y = math.clamp(player.y + math.random(500) * math.rsign(), 0 + 2*tiles.tileH, tiles.h - 2*tiles.tileH)
     -- but not too close
-    if math.dist(z.x, z.y, player.x, player.y) < 200 or player_collides(z) then
+    if math.dist(z.x, z.y, player.x, player.y) < 100 or player_collides(z) then
         new_zombie(zombie_list, player)
 	return
     end
@@ -73,7 +74,7 @@ end
 
 
 function update_zombies(zombie, player, tiles, dt)
-    if zombie.spawn_time > 1 then
+    if zombie.spawn_time > zombie.time_to_spawn then
         new_zombie(zombie.list, player)
 	zombie.spawn_time = 0
     else 

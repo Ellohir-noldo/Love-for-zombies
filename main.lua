@@ -15,7 +15,7 @@ function love.load()
 
     -- Initialize the pseudo random number generator
     math.randomseed( os.time() )
-    math.random(); math.random(); math.random()
+    math.random(); math.random(); math.random();
     -- done. :-)
 
     
