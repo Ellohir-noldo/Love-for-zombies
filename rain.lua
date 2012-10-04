@@ -45,8 +45,8 @@ function update_rain(rain, dt)
 	drop.y = drop.y + 5
 	if drop.x < camera:getX() or drop.y > (camera:getY() + 512) then
             table.remove(rain.drops, i)
-	    drop.x = camera:getX() + math.random(1000) 
-	    drop.y = camera:getY() + math.random(300) 
+	    drop.x = camera:getX() + math.round(math.random(1000), 100)
+	    drop.y = camera:getY() + math.round(math.random(300), 30)
             table.insert(rain.drops, drop)	  
 	end
 	

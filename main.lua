@@ -47,6 +47,10 @@ end
 -- pressing keys while on menus
 function love.keypressed( key )
 
+    if key == "escape" then
+	gameIsPaused = not gameIsPaused
+    end
+    
     update_menus(menu, key)
    
 end
@@ -71,20 +75,24 @@ end
 
 -- Lose focus = pause, get focus = unpause
 function love.focus(f) 
-        if gameIsPaused and menu.sound then
+	
+	if f == false then
+		gameIsPaused = true
+		TEsound.disable_sound()
+                rain.playing = false
+	elseif menu.sound then
                 TEsound.enable_sound()
                 TEsound.playLooping("sound/bgm.ogg", "bgm")
-        else
-                TEsound.disable_sound()
-                rain.playing = false
-        end
-        gameIsPaused = not f 
+	end
+        
 end
 
 --[[                              LOVE.MOUSEPRESSED                                     ]]--
 function love.mousepressed(x, y, button)
--- CLICKING ON MENUS!!
-        update_menus(menu, _, button)
+    -- if we are paused we are done
+    if gameIsPaused then return end      
+    -- CLICKING ON MENUS!!
+    update_menus(menu, _, button)
 end
 
 --[[                                              LOVE.UPDATE                                              ]]--
@@ -92,12 +100,15 @@ function love.update(dt)
       -- sound management
       TEsound.cleanup()
   
-     -- if we are paused we are done
-     if gameIsPaused then return end    
   
      -- camera and mouse updates
     camera:setPosition(player.x - 512/2, player.y - 512/2)
     mouse_x, mouse_y = camera:mousePosition()
+  
+
+    -- if we are paused we are done
+    if gameIsPaused then return end      
+
     
     -- different updates for different menus
     if menu.gamestart then
@@ -115,7 +126,7 @@ function love.update(dt)
 	rain.playing = false
 	update_gameover_scene(menu)
 	-- and don't do anything else
-    else
+    else   
         -- self-explanatory playing functions
         player_move(tiles, dt)
         shoot_control(player, mouse_x, mouse_y, weapon, dt)
@@ -175,7 +186,8 @@ function love.draw()
       love.graphics.circle("fill", player.x, player.y, 1000)
       love.graphics.setColor(200, 200, 200)
       love.graphics.print("PAUSED", camera:getX() + 220, camera:getY() + 150, 0, 1, 1)
-  end
+      love.graphics.print("Press escape to continue", camera:getX() + 120, camera:getY() + 350, 0, 1, 1)
+    end
 
   
   

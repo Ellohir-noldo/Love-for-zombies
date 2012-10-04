@@ -46,7 +46,8 @@ function update_menus(menu, key, button)
       update_highscore_list(menu, key, button)
    elseif menu.settings then
       update_settings_menu(menu, key, button)
-   end
+    end
+	
 end
 
 function update_gameover_scene(menu, player)
