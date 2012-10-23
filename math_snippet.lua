@@ -1,5 +1,10 @@
 -- this file is imported from love2d wiki
 
+function replace_char(pos, str, r)
+    return str:sub(1, pos-1) .. r .. str:sub(pos+1)
+end
+
+
 
 function in_table(t,s)
   for i,v in pairs(t) do

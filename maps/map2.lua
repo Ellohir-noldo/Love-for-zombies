@@ -18,20 +18,29 @@ map.tilesetW, map.tilesetH = 256,256
   { 'e', 192,128 }, -- 
   { 'f', 0,  192 }, -- 
   { 'g', 64, 192 }, -- 
-  { 'i', 128,192 }, --  
-  { 'j', 192,192 }  --   
+  { 'i', 128,192 }, -- 
+  { 'j', 192,192 } -- 
   }
 
   map.collidable = {'^','h','v','H','V'}
   
 map.tileString = [[
-chhhhhhhhhhhhhhhd
-v               V
-v               V
-v               V
-v               V
-v               V
-v               V
-v               V
-aHHHHHHHHHHHHHHHb
+chhhhhhhhhhhhhhhhhhhhhhhd
+v   ^             m     V
+v   m                   V
+v              m  ^     V
+v      ^                V
+v                       V
+v    ^      m           V
+v   m                   V
+v              m        V
+v    m                  V
+v               ^       V
+v        m              V
+v            ^          V
+v   ^             m     V
+v     m     m           V
+v                       V
+v   m              m    V
+aHHHHHHHHHHHHHHHHHHHHHHHb
 ]]

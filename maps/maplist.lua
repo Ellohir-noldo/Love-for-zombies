@@ -1,1 +1,1 @@
-maplist = {"maps/map1.lua"}
+maplist = {"maps/randomMap.lua", "maps/map1.lua","maps/map2.lua"}

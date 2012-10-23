@@ -4,11 +4,23 @@ function init_tiles()
      tiles = {}
      -- load requires a table "tiles" to load the map to
      -- this allows to load another maps while not changing what is being printed
+    
     love.filesystem.load("maps/maplist.lua")()
     tiles.maplist = maplist
     tiles.map_amount = #maplist
     tiles.map_index = 1
     return load_map(tiles, maplist[tiles.map_index])
+end
+
+function next_map()
+	-- loop on circular vector
+	if tiles.map_index < tiles.map_amount then
+		tiles.map_index = tiles.map_index + 1
+	else
+		tiles.map_index = 1
+	end
+	-- load the map
+	load_map(tiles, maplist[tiles.map_index])
 end
  
  
@@ -38,6 +50,10 @@ function load_map(tiles, path)
           for character in row:gmatch(".") do
               tiles.tileTable[columnIndex][rowIndex] = character
               columnIndex = columnIndex + 1
+	      if character == 'f' then
+		tiles.jeep.x = (columnIndex -1.5) * map.tileW
+		tiles.jeep.y = (rowIndex -0.5) * map.tileH
+	       end
           end
        rowIndex=rowIndex+1
     end

@@ -1,12 +1,16 @@
 
 --[[                                            PLAYER MOVEMENT                                    ]]--
 
-function init_player(w, h)
+function init_player()
 
-    -- predefined values
     player = {}
-    player.x = w/2
-    player.y = h/2
+    player.x = math.random(tiles.w)
+    player.y = math.random(tiles.h)
+    while player_collides(player) do
+	    player.x = math.clamp(math.random(tiles.w), tiles.tileW, tiles.w-tiles.tileW)
+	    player.y = math.clamp(math.random(tiles.h), tiles.tileH, tiles.w-tiles.tileH)
+    end
+    
     player.speed = 190
     player.original_speed = 190
     player.walked = 0

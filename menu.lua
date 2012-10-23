@@ -165,6 +165,7 @@ function update_highscore_list(menu, key, button)
 	menu.gamestart = true
 	menu.gameover = false
 	menu.settings = false
+	load_map(tiles, "maps/randomMap.lua")
     end
     
     -- mouse selection
@@ -180,6 +181,7 @@ function update_highscore_list(menu, key, button)
             menu.gamestart = true
 	    menu.gameover = false
             menu.settings = false
+	    load_map(tiles, "maps/randomMap.lua")
     end
     
 end
