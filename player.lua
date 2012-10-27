@@ -15,7 +15,6 @@ function init_player()
     player.original_speed = 190
     player.walked = 0
     player.img = love.graphics.newImage("img/player.png")
-    player.shot_img = love.graphics.newImage("img/player_shots.png")
     player.angle = 0
     player.nsteps = 1
     player.shot_steps = 3
@@ -53,14 +52,14 @@ end
 
 -- sets the shooting sprite we are on now
 function player_shootstep(player, shot)
-    if shot.left > 0 then
-       if shot.not_shooting > 0.2 then 
+    if shot.current.left > 0 then
+       if shot.not_shooting > shot.current.time_frame_3 then 
            player.shot_steps = 3
-       elseif shot.not_shooting > 0.15 then
+       elseif shot.not_shooting > shot.current.time_frame_2 then
            player.shot_steps = 2
-       elseif shot.not_shooting > 0.1 then
+       elseif shot.not_shooting > shot.current.time_frame_1 then
            player.shot_steps = 1
-       elseif shot.not_shooting > 0.05 then
+       elseif shot.not_shooting > shot.current.time_frame_0 then
           player.shot_steps = 0
        end
     end
@@ -169,7 +168,7 @@ function draw_player(player, menu)
     -- player.nsteps contains actual sprite we are on
     love.graphics.setColor(200, 200, 200)
     love.graphics.drawq(player.img, player.step[player.nsteps], player.x, player.y, player.angle, 1, 1, 32 / 2, 32 / 2)
-    love.graphics.drawq(player.shot_img, player.step[player.shot_steps], player.x, player.y, player.angle, 1, 1, 32 / 2, 32 / 2)
+    love.graphics.drawq(weapon.current.img, player.step[player.shot_steps], player.x, player.y, player.angle, 1, 1, 32 / 2, 32 / 2)
        
     --love.graphics.print(" "..string.format("%02d", player.x).." "..string.format("%02d",player.y), player.x, player.y)
 end

@@ -3,13 +3,38 @@
 function init_weapon()
     -- default values 
     weapon = {}
-    weapon.speed = 14
-    weapon.pack = 8
-    weapon.left = weapon.pack
+    
+    weapon.handgun = {}
+    weapon.handgun.img = love.graphics.newImage("img/handgun.png")
+    weapon.handgun.pack = 8
+    weapon.handgun.left = weapon.handgun.pack
+    weapon.handgun.rate = 0.3
+    weapon.handgun.reload_time = 1.5
+    weapon.handgun.time_frame_0 = 0.05
+    weapon.handgun.time_frame_1 = 0.10
+    weapon.handgun.time_frame_2 = 0.15
+    weapon.handgun.time_frame_3 = 0.20
+    
+    
+    weapon.machinegun = {}
+    weapon.machinegun.img = love.graphics.newImage("img/machinegun.png")
+    weapon.machinegun.pack = 16
+    weapon.machinegun.left = weapon.machinegun.pack
+    weapon.machinegun.rate = 0.1
+    weapon.machinegun.reload_time = 3
+    weapon.machinegun.time_frame_0 = 0.01
+    weapon.machinegun.time_frame_1 = 0.03
+    weapon.machinegun.time_frame_2 = 0.06
+    weapon.machinegun.time_frame_3 = 0.10
+    
+    weapon.current = weapon.handgun
+    
+    
+    weapon.img = love.graphics.newImage("img/bullet.png")
+    weapon.bullet_speed = 18
     weapon.angle = 0
     weapon.not_shooting = 1
     weapon.not_reloading = 1
-    weapon.img = love.graphics.newImage("img/bullet.png")
     weapon.bulletQ = love.graphics.newQuad(0,0, 4, 8, 16, 16)
     weapon.rockQ = love.graphics.newQuad(6,0, 7, 8, 16, 16)
     weapon.bullets = {}
@@ -20,7 +45,7 @@ function init_weapon()
 end
 
 function shoot(player, mouse_x, mouse_y, weapon)
-  if weapon.left > 0 then
+  if weapon.current.left > 0 then
    -- create a bullet
    local s = {}
    -- it's on the player
@@ -35,12 +60,12 @@ function shoot(player, mouse_x, mouse_y, weapon)
    
    -- offset calculation:
    -- it's not on the player, it's on the gun
-   s.y = s.y + 3 * math.sin(s.angle)
+   s.y = s.y + 7 * math.sin(s.angle)
    s.x = s.x + 8 * math.cos(s.angle) 
    
    -- get to list of shots, one less on cardtridge, gunshot sound
    table.insert(weapon.bullets, s)
-   weapon.left = weapon.left - 1
+   weapon.current.left = weapon.current.left - 1
    TEsound.play("sound/shot.ogg")
   else
     -- no ammo left!
@@ -56,14 +81,14 @@ function shoot_control(player, mouse_x, mouse_y, shot, dt)
     -- so I heard you want to shoot?
     if love.mouse.isDown("l") then
       -- you can't shoot unless it's 1/3 seconds past from last
-      if weapon.not_shooting > 0.3 and weapon.not_reloading > 0.8 then
+      if weapon.not_shooting > weapon.current.rate and weapon.not_reloading > weapon.current.reload_time/2 then
           -- shoot
 	  shoot(player, mouse_x, mouse_y, weapon, weapon.bullets)
 	  weapon.not_shooting = 0
       end
     elseif love.mouse.isDown("r") then
      -- same for realoading
-      if weapon.not_reloading > 1.5 then
+      if weapon.not_reloading > weapon.current.reload_time then
           reload_weapon(weapon)
 	  weapon.not_reloading = 0
 	  weapon.blink = false
@@ -74,8 +99,8 @@ end
 function update_shots(weapon, dt)
     -- move every shot in its direction
     for i,v in ipairs(weapon.bullets) do
-      v.x = v.x + (weapon.speed * v.dirx)
-      v.y = v.y + (weapon.speed * v.diry)
+      v.x = v.x + (weapon.bullet_speed * v.dirx)
+      v.y = v.y + (weapon.bullet_speed * v.diry)
       if v.x > tiles.w or v.x < 0 or v.y > tiles.h or v.y < 0 then
         table.remove(weapon.bullets, i)
       end
@@ -107,7 +132,7 @@ end
 
 -- this needs no explanation
 function reload_weapon(weapon)
-    weapon.left = weapon.pack
+    weapon.current.left = weapon.current.pack
     TEsound.play("sound/reload.ogg")
 end
 
@@ -138,7 +163,7 @@ function draw_shots(weapon, player)
    
   -- ammo left
   if weapon.blink == false then
-      for i = 1, weapon.left do
+      for i = 1, weapon.current.left do
           love.graphics.setColor(200, 200, 200)
           love.graphics.drawq(weapon.img, weapon.bulletQ, 500 + camera:getX() - 11 * i, camera:getY() + 10, 0, 2, 2)
           --love.graphics.print(string.format("%02d",shot.left), camera:getX() +10 + 20, camera:getY() + 10)

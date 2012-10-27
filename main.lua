@@ -49,6 +49,10 @@ function love.keypressed( key )
 
     if key == "escape" then
 	gameIsPaused = not gameIsPaused
+    elseif love.keyboard.isDown("1") then
+	weapon.current = weapon.handgun
+    elseif love.keyboard.isDown("2") then
+	weapon.current = weapon.machinegun
     end
     
     update_menus(menu, key)
