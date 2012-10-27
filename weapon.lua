@@ -10,6 +10,7 @@ function init_weapon()
     weapon.handgun.left = weapon.handgun.pack
     weapon.handgun.rate = 0.3
     weapon.handgun.reload_time = 1.5
+    weapon.handgun.reload_sound = "sound/reload_gun.ogg"
     weapon.handgun.time_frame_0 = 0.05
     weapon.handgun.time_frame_1 = 0.10
     weapon.handgun.time_frame_2 = 0.15
@@ -21,7 +22,8 @@ function init_weapon()
     weapon.machinegun.pack = 16
     weapon.machinegun.left = weapon.machinegun.pack
     weapon.machinegun.rate = 0.1
-    weapon.machinegun.reload_time = 3
+    weapon.machinegun.reload_time = 5
+    weapon.machinegun.reload_sound = "sound/reload_mg.mp3"
     weapon.machinegun.time_frame_0 = 0.01
     weapon.machinegun.time_frame_1 = 0.03
     weapon.machinegun.time_frame_2 = 0.06
@@ -31,6 +33,7 @@ function init_weapon()
     
     
     weapon.img = love.graphics.newImage("img/bullet.png")
+    weapon.gunui = love.graphics.newImage("img/gunui.png")
     weapon.bullet_speed = 18
     weapon.angle = 0
     weapon.not_shooting = 1
@@ -133,7 +136,7 @@ end
 -- this needs no explanation
 function reload_weapon(weapon)
     weapon.current.left = weapon.current.pack
-    TEsound.play("sound/reload.ogg")
+    TEsound.play(weapon.current.reload_sound)
 end
 
 function bullets_hit_rocks(shot_list)
@@ -173,4 +176,18 @@ function draw_shots(weapon, player)
       love.graphics.print("RELOAD", 410 + camera:getX() +10, camera:getY() + 5)
   end
    
+   -- draw gun uni
+   
+    love.graphics.setColor(200, 200, 200)
+    love.graphics.draw(weapon.gunui, camera:getX(), camera:getY() + 480)
+    love.graphics.setColor(200, 0, 0, 200)
+    if weapon.current == weapon.handgun then
+	love.graphics.rectangle("line", camera:getX()+1, camera:getY() + 479, 32, 32)
+	love.graphics.setColor(200, 0, 0, 30)
+	love.graphics.rectangle("fill", camera:getX()+1, camera:getY() + 479, 32, 32)
+    elseif weapon.current == weapon.machinegun then
+        love.graphics.rectangle("line", camera:getX() + 33, camera:getY() + 479, 32, 32)
+	love.graphics.setColor(200, 0, 0, 30)
+	love.graphics.rectangle("fill", camera:getX() + 33, camera:getY() + 479, 32, 32)
+    end
 end

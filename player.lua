@@ -160,7 +160,7 @@ function draw_health(player, menu)
         love.graphics.rectangle("fill", camera:getX() + 5, camera:getY() + 5, 30*player.health.max, 25)
 	love.graphics.setColor(0, 200, 0, 200)
         love.graphics.rectangle("fill", camera:getX() + 5, camera:getY() + 5, 30*player.health.curr, 25)
-    end
+    end    
 end
 
 function draw_player(player, menu)
@@ -169,6 +169,5 @@ function draw_player(player, menu)
     love.graphics.setColor(200, 200, 200)
     love.graphics.drawq(player.img, player.step[player.nsteps], player.x, player.y, player.angle, 1, 1, 32 / 2, 32 / 2)
     love.graphics.drawq(weapon.current.img, player.step[player.shot_steps], player.x, player.y, player.angle, 1, 1, 32 / 2, 32 / 2)
-       
     --love.graphics.print(" "..string.format("%02d", player.x).." "..string.format("%02d",player.y), player.x, player.y)
 end
