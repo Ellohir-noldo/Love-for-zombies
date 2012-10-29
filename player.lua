@@ -53,13 +53,13 @@ end
 -- sets the shooting sprite we are on now
 function player_shootstep(player, shot)
     if shot.current.left > 0 then
-       if shot.not_shooting > shot.current.time_frame_3 then 
+       if shot.current.not_shooting > shot.current.time_frame_3 then 
            player.shot_steps = 3
-       elseif shot.not_shooting > shot.current.time_frame_2 then
+       elseif shot.current.not_shooting > shot.current.time_frame_2 then
            player.shot_steps = 2
-       elseif shot.not_shooting > shot.current.time_frame_1 then
+       elseif shot.current.not_shooting > shot.current.time_frame_1 then
            player.shot_steps = 1
-       elseif shot.not_shooting > shot.current.time_frame_0 then
+       elseif shot.current.not_shooting > shot.current.time_frame_0 then
           player.shot_steps = 0
        end
     end

@@ -9,7 +9,9 @@ function init_weapon()
     weapon.handgun.pack = 8
     weapon.handgun.left = weapon.handgun.pack
     weapon.handgun.rate = 0.3
-    weapon.handgun.reload_time = 1.5
+    weapon.handgun.not_shooting = 1
+    weapon.handgun.not_reloading = 1
+    weapon.handgun.reload_time = 0.75
     weapon.handgun.reload_sound = "sound/reload_gun.mp3"
     weapon.handgun.time_frame_0 = 0.05
     weapon.handgun.time_frame_1 = 0.10
@@ -22,7 +24,9 @@ function init_weapon()
     weapon.machinegun.pack = 16
     weapon.machinegun.left = weapon.machinegun.pack
     weapon.machinegun.rate = 0.1
-    weapon.machinegun.reload_time = 5
+    weapon.machinegun.not_shooting = 1
+    weapon.machinegun.not_reloading = 1
+    weapon.machinegun.reload_time = 2.5
     weapon.machinegun.reload_sound = "sound/reload_mg.mp3"
     weapon.machinegun.time_frame_0 = 0.01
     weapon.machinegun.time_frame_1 = 0.03
@@ -36,8 +40,6 @@ function init_weapon()
     weapon.gunui = love.graphics.newImage("img/gunui.png")
     weapon.bullet_speed = 18
     weapon.angle = 0
-    weapon.not_shooting = 1
-    weapon.not_reloading = 1
     weapon.bulletQ = love.graphics.newQuad(0,0, 4, 8, 16, 16)
     weapon.rockQ = love.graphics.newQuad(6,0, 7, 8, 16, 16)
     weapon.bullets = {}
@@ -83,17 +85,17 @@ function shoot_control(player, mouse_x, mouse_y, shot, dt)
 
     -- so I heard you want to shoot?
     if love.mouse.isDown("l") then
-      -- you can't shoot unless it's 1/3 seconds past from last
-      if weapon.not_shooting > weapon.current.rate and weapon.not_reloading > weapon.current.reload_time/2 then
+      -- you can't shoot unless it's some time past from last
+      if weapon.current.not_shooting > weapon.current.rate and weapon.current.not_reloading > weapon.current.reload_time then
           -- shoot
 	  shoot(player, mouse_x, mouse_y, weapon, weapon.bullets)
-	  weapon.not_shooting = 0
+	  weapon.current.not_shooting = 0
       end
     elseif love.mouse.isDown("r") then
      -- same for realoading
-      if weapon.not_reloading > weapon.current.reload_time then
+      if weapon.current.not_reloading > weapon.current.reload_time then
           reload_weapon(weapon)
-	  weapon.not_reloading = 0
+	  weapon.current.not_reloading = 0
 	  weapon.blink = false
       end
     end
@@ -121,8 +123,8 @@ function update_shots(weapon, dt)
     bullets_hit_rocks(weapon.bullets)
     
     -- keep the time counting
-    weapon.not_shooting = weapon.not_shooting + dt
-    weapon.not_reloading = weapon.not_reloading + dt
+    weapon.current.not_shooting = weapon.current.not_shooting + dt
+    weapon.current.not_reloading = weapon.current.not_reloading + dt
     
     if weapon.blink then
         weapon.blink_time = weapon.blink_time + dt
