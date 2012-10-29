@@ -26,7 +26,7 @@
   
   --- RANDOMIZER PARAMETERS---
 
-  map.size = math.random(10,60)
+  map.size = math.random(20,80)
   map.mud = math.random(2,7) / 100
   map.rock = math.random(2,7) / 100
   
