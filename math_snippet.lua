@@ -49,6 +49,9 @@ function math.normalize(x,y) local l=(x*x+y*y)^.5 if l==0 then return 0,0,0 else
 -- Returns 'n' rounded to the nearest 'deci'th.
 function math.round(n, deci) deci = 10^(deci or 0) return math.floor(n*deci+.5)/deci end
 
+-- Special not-decimal round
+function math.sround(n, deci) return math.floor(n*deci+.5)/deci end
+
 
 -- Randomly returns either -1 or 1.
 function math.rsign() return math.random(2) == 2 and 1 or -1 end

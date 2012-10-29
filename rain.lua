@@ -7,8 +7,8 @@ function init_rain()
     rain.playing = true    
     for i = 1, rain.amount do
         drop = {}
-	    drop.x = camera:getX() + math.random(530)
-	    drop.y = camera:getY() + math.random(530)  
+	    drop.x = camera:getX() + math.sround(math.random(530), 32)
+	    drop.y = camera:getY() + math.sround(math.random(530), 32)
         table.insert(rain.drops, drop)
     end
     return rain
