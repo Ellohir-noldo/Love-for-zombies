@@ -2,7 +2,7 @@ function init_rain()
     rain = {}
     rain.img = love.graphics.newImage("img/rain.png")
     rain.drops = {}
-    rain.amount = 90
+    rain.amount = 40
     rain.time = 0
     rain.playing = true    
     for i = 1, rain.amount do
@@ -35,14 +35,14 @@ function update_rain(rain, dt)
 
     rain.time = 0
     if rain.playing == false then
-        TEsound.playLooping("sound/storm.ogg", "rain") -- stream and loop background music
+        TEsound.playLooping("sound/storm.mp3", "rain") -- stream and loop background music
 	rain.playing = true
     end
 
     for i = 1, rain.amount do
         drop = rain.drops[i]
-        drop.x = drop.x - 5
-	drop.y = drop.y + 5
+        drop.x = drop.x - 8
+	drop.y = drop.y + 8
 	if drop.x < camera:getX() or drop.y > (camera:getY() + 512) then
             table.remove(rain.drops, i)
 	    drop.x = camera:getX() + math.round(math.random(1000), 100)

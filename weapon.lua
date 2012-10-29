@@ -10,7 +10,7 @@ function init_weapon()
     weapon.handgun.left = weapon.handgun.pack
     weapon.handgun.rate = 0.3
     weapon.handgun.reload_time = 1.5
-    weapon.handgun.reload_sound = "sound/reload_gun.ogg"
+    weapon.handgun.reload_sound = "sound/reload_gun.mp3"
     weapon.handgun.time_frame_0 = 0.05
     weapon.handgun.time_frame_1 = 0.10
     weapon.handgun.time_frame_2 = 0.15
@@ -69,11 +69,11 @@ function shoot(player, mouse_x, mouse_y, weapon)
    -- get to list of shots, one less on cardtridge, gunshot sound
    table.insert(weapon.bullets, s)
    weapon.current.left = weapon.current.left - 1
-   TEsound.play("sound/shot.ogg")
+   TEsound.play("sound/shot.mp3")
   else
     -- no ammo left!
     weapon.blink = true    
-    TEsound.play("sound/empty.ogg")
+    TEsound.play("sound/empty.mp3")
   end
 end
 
@@ -145,7 +145,7 @@ function bullets_hit_rocks(shot_list)
             sh.time = 0
             table.insert(weapon.rocked, sh) 
             if math.dist(player.x,player.y, sh.x,sh.y) < 400 then
-                TEsound.play("sound/rock.wav")
+                TEsound.play("sound/rock.mp3")
             end
             table.remove(shot_list, k)
         end

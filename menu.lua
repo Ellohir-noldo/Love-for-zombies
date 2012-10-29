@@ -17,7 +17,7 @@ function init_menu()
     menu.item = 1 -- start menu item
     menu.death_sound = true -- played on gameover
     menu.inputname = "" -- highscore input name
-    TEsound.playLooping("sound/bgm.ogg", "bgm") -- stream and loop background music
+    TEsound.playLooping("sound/bgm.mp3", "bgm") -- stream and loop background music
     menu.font = love.graphics.newFont("img/Adler.ttf", 20)
     love.graphics.setFont(menu.font)
     
@@ -60,7 +60,7 @@ function update_gameover_scene(menu, player)
 	
 	if menu.death_sound then
 	    TEsound.stop("all")
-	    TEsound.play("sound/death.ogg")
+	    TEsound.play("sound/death.mp3")
 	    menu.death_sound = false -- death sound only sounds once
 	end
 	
@@ -230,7 +230,7 @@ function update_settings_menu(menu, key, button)
                 menu.sound = false
             else
                 TEsound.enable_sound()
-                TEsound.playLooping("sound/bgm.ogg", "bgm") -- stream and loop background music
+                TEsound.playLooping("sound/bgm.mp3", "bgm") -- stream and loop background music
                 menu.sound = true
             end
         elseif menu.setting == 3 and (button == "l"  or key=="return") then

@@ -86,7 +86,7 @@ function love.focus(f)
                 rain.playing = false
 	elseif menu.sound then
                 TEsound.enable_sound()
-                TEsound.playLooping("sound/bgm.ogg", "bgm")
+                TEsound.playLooping("sound/bgm.mp3", "bgm")
 	end
         
 end

@@ -160,7 +160,7 @@ function zombies_shot(zombie, shot_list, player)
 	        -- bullet wasted, zombie hit
 		table.remove(shot_list, k)
 	        z.health.curr = z.health.curr -1
-		TEsound.play("sound/kill.ogg")
+		TEsound.play("sound/kill.mp3")
 		-- if the dead dies
 		if z.health.curr == 0 then
 	            -- zombie and bullet disappear
