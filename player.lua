@@ -15,6 +15,7 @@ function init_player()
     player.original_speed = 190
     player.walked = 0
     player.img = love.graphics.newImage("img/player.png")
+    player.flashlight = love.graphics.newImage("img/flashlight.png")
     player.angle = 0
     player.nsteps = 1
     player.shot_steps = 3
@@ -161,6 +162,10 @@ function draw_health(player, menu)
 	love.graphics.setColor(0, 200, 0, 200)
         love.graphics.rectangle("fill", camera:getX() + 5, camera:getY() + 5, 30*player.health.curr, 25)
     end    
+    love.graphics.setColor(200, 200, 200, 200)
+    love.graphics.draw(player.flashlight, player.x, player.y, player.angle+math.pi/2, 1, 1, 512, 512)
+    
+    
 end
 
 function draw_player(player, menu)
