@@ -9,8 +9,11 @@ function init_zombie()
     zombie.list = {}
     zombie.dying = {}
     
+    zombie.twave = 0
+    zombie.wave_period = 10 -- n seconds for a new wave
+    zombie.difficulty = 0.8
     zombie.spawn_time = 0
-    zombie.time_to_spawn = 0.8 -- every 0.8 seconds a new zombie 
+    zombie.time_to_spawn = 1 -- every X seconds a new zombie 
     
     -- players positions on tileset
     zombie.step = {}
@@ -42,7 +45,7 @@ function new_zombie(zombie_list, player)
     z.health = {}
     
     -- stats for this new zombie
-    local r = math.random(100)
+    local r = math.random(50) + math.random(50)
     if   r > 80 then
         -- fast, red zombie
         z.speed = 150
@@ -74,6 +77,13 @@ end
 
 
 function update_zombies(zombie, player, tiles, dt)
+    
+    zombie.twave = zombie.twave + dt
+    if zombie.twave > zombie.wave_period then
+	zombie.time_to_spawn = zombie.time_to_spawn * zombie.difficulty
+	zombie.twave = 0
+    end
+
     if zombie.spawn_time > zombie.time_to_spawn then
         new_zombie(zombie.list, player)
 	zombie.spawn_time = 0
