@@ -19,14 +19,10 @@ function init_player()
     player.angle = 0
     player.nsteps = 1
     player.shot_steps = 3
-    player.alive = 0
-    player.killed = 0
+    player.talive = 0
+    player.zkilled = 0
     player.last_step = 0
-    
-    -- health 
-    player.health = {}
-    player.health.max = 3
-    player.health. curr = 3
+    player.isdead = false
     
     -- players positions on tileset image
     player.step = {}
@@ -48,7 +44,7 @@ end
 
 -- zombies killed, calling this function means you rock :D
 function player_kill(player)
-    player.killed = player.killed + 1
+    player.zkilled = player.zkilled + 1
 end
 
 -- sets the shooting sprite we are on now
@@ -80,7 +76,7 @@ end
 
 function player_move(tiles, dt)
     -- moving or not, you are alive one more moment
-    player.alive = player.alive + dt
+    player.talive = player.talive + dt
     if player_in_mud(player, tiles) then
         player.speed = player.original_speed * 0.4
     else
@@ -136,37 +132,21 @@ function player_attacked(player, zombie_list, dt)
 -- CheckCollision(box1x, box1y, box1w, box1h, box2x, box2y, box2w, box2h)
   for i,z in ipairs(zombie_list) do
                 if CheckCollision(z.x -10, z.y -10, 20, 20, player.x - 10, player.y - 10, 20, 20) then
-		    -- yes, two zombies means twice damage
-                    player.health.curr = player.health.curr - 2*dt
+			player.isdead = true
 		end
   end
 end
 
 -- is my player dead?
 function player_dead(player, zombie_list)
-    if player.health.curr <= 0 then
-        return true
-    else
-        return false
-    end
+    return player.isdead
 end
 
-function draw_health(player, menu)
-    love.graphics.setColor(200, 0, 0, 200)
-    if menu.health_bar then
-        love.graphics.rectangle("fill", player.x - 10*player.health.max / 2, player.y - 15, 10*player.health.max, 3)
-	love.graphics.setColor(0, 200, 0, 200)
-	love.graphics.rectangle("fill", player.x - 10*player.health.max / 2, player.y - 15, 10*player.health.curr, 3)
-    else
-        love.graphics.rectangle("fill", camera:getX() + 5, camera:getY() + 5, 30*player.health.max, 25)
-	love.graphics.setColor(0, 200, 0, 200)
-        love.graphics.rectangle("fill", camera:getX() + 5, camera:getY() + 5, 30*player.health.curr, 25)
-    end    
+function draw_darkness()
     love.graphics.setColor(200, 200, 200, 200)
     love.graphics.draw(player.flashlight, player.x, player.y, player.angle+math.pi/2, 1, 1, 512, 512)
-    
-    
 end
+
 
 function draw_player(player, menu)
     -- player.step contains the quads (sprites)

@@ -159,10 +159,10 @@ function love.draw()
   draw_player(player, menu)
   -- but zombies cover player
   draw_zombies(zombie)
-  -- up it rain, shots and health
+  -- up it rain, darkness, shots
   draw_rain(rain)
+  if menu.darkness then  draw_darkness() end
   draw_shots(weapon, player)  
-  draw_health(player, menu)
   
   
   if menu.gamestart then

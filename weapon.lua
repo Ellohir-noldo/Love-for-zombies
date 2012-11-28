@@ -81,7 +81,7 @@ end
 
 
 function shoot_control(player, mouse_x, mouse_y, shot, dt)
-    if player.alive < 0.2 then return end
+    if player.talive < 0.2 then return end
 
     -- so I heard you want to shoot?
     if love.mouse.isDown("l") then

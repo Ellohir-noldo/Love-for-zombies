@@ -7,7 +7,7 @@ function init_menu()
     menu.showHS_back = false
     menu.settings = false
     menu.setting = 1
-    menu.health_bar = false
+    menu.darkness = true
     menu.sound = true
     menu.rain = 0
     menu.size = 1
@@ -125,8 +125,8 @@ function update_highscore_menu(menu, key)
     -- getting the input char by char, like oldskool
     if key == "return" or key == "escape" then
         points = {}
-        points.kills = player.killed
-        points.alive = player.alive
+        points.kills = player.zkilled
+        points.alive = player.talive
 	points.name = menu.inputname
         table.insert(menu.HS, points)
 	table.sort(menu.HS, function(a,b) if a.kills == b.kills then return a.alive>b.alive else return a.kills>b.kills end end)
@@ -223,7 +223,7 @@ function update_settings_menu(menu, key, button)
         
 
         if menu.setting == 1 and (button == "l"  or key=="return") then
-            menu.health_bar = not menu.health_bar
+            menu.darkness = not menu.darkness
         elseif menu.setting == 2 and (button == "l"  or key=="return") then
             if menu.sound then
                 TEsound.disable_sound()
@@ -310,10 +310,10 @@ function draw_settings_menu(menu)
       if menu.setting == 1 then
           love.graphics.setColor(200, 20, 20)
       end      
-      if menu.health_bar == false then
-          love.graphics.print("Health top of screen",  camera:getX() + 200, camera:getY() + 250 )
+      if menu.darkness == false then
+          love.graphics.print("Darkness off",  camera:getX() + 200, camera:getY() + 250 )
       else
-          love.graphics.print("Health above player",  camera:getX() + 200, camera:getY() + 250 )
+          love.graphics.print("Darkness on",  camera:getX() + 200, camera:getY() + 250 )
       end
       
       love.graphics.setColor(200, 200, 200)
@@ -362,8 +362,8 @@ function draw_gameover_menu(menu, player)
       -- and the text for the scene
       love.graphics.setColor(200, 200, 200)
       love.graphics.print("GAME OVER", camera:getX() + 100, camera:getY() + 100)
-      love.graphics.print("You survived "..string.format("%.2f",player.alive).." seconds", camera:getX() + 100, camera:getY() + 150)
-      love.graphics.print("You killed "..string.format("%d",player.killed).." zombies", camera:getX() + 100, camera:getY() + 180)
+      love.graphics.print("You survived "..string.format("%.2f",player.talive).." seconds", camera:getX() + 100, camera:getY() + 150)
+      love.graphics.print("You killed "..string.format("%d",player.zkilled).." zombies", camera:getX() + 100, camera:getY() + 180)
 
 end
 
@@ -386,7 +386,7 @@ function draw_highscore_menu(menu, player)
       end
       
       love.graphics.print("Name: "..menu.inputname..cursor, camera:getX() + 100, camera:getY() + 150)
-      love.graphics.print("\nSurviving: "..string.format("%.2f",player.alive).." seconds\nEliminating: "..string.format("%d",player.killed).." zombies", camera:getX() + 100, camera:getY() + 180)
+      love.graphics.print("\nSurviving: "..string.format("%.2f",player.talive).." seconds\nEliminating: "..string.format("%d",player.zkilled).." zombies", camera:getX() + 100, camera:getY() + 180)
      -- if menu.key_capslock or menu.key_shift then
      --     love.graphics.print("\nCAPS ON", camera:getX() + 150, camera:getY() + 150)
      -- end
