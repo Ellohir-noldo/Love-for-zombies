@@ -78,6 +78,24 @@ function player_collides(player)
     return in_table(tiles.collidable, player_tile(player,tiles))
 end
 
+function check_expand_map(player)
+	local xtile = math.ceil(player.x/tiles.tileW)
+	local ytile = math.ceil(player.y/tiles.tileH)
+	
+	if xtile < map.sizeH/5 then
+		map.expand("L")
+	elseif xtile > map.sizeH*4/5 then
+		map.expand("R")
+	end
+	
+	if ytile < map.sizeV/5 then
+		map.expand("U")
+	elseif ytile > map.sizeH*4/5 then
+		map.expand("D")
+	end
+	
+end
+
 function draw_tiles(tiles)
   love.graphics.setColor(200, 200, 200)
     for columnIndex,column in ipairs(tiles.tileTable) do

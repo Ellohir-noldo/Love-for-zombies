@@ -143,6 +143,8 @@ function love.update(dt)
         player_angle(player, mouse_x, mouse_y)
         player_step(player)
 	player_shootstep(player, weapon)
+	
+	--check_expand_map(player)
     end
 end
 
